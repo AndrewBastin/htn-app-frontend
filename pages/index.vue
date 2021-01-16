@@ -17,10 +17,14 @@
                 <input 
                 id="from" 
                 class="font-bold text-xl focus:outline-none inline-flex flex-1"
-                value="Thunder Bay" 
+                :class="{ 'text-purple-700': usingGeolocation }"
+                v-model="fromLocation" 
+                :disabled="usingGeolocation"
                 />
                 <button
-                  class="border-purple-700 border-solid border-2 rounded text-purple-700 px-1 py-1"
+                  class="border-purple-700 border-solid border-2 rounded px-1 py-1"
+                  :class="{ 'text-white': usingGeolocation, 'text-purple-700': !usingGeolocation, 'bg-purple-700': usingGeolocation }"
+                  @click="toggleGeolocation"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18px" height="18px"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z"/></svg>
                 </button>
@@ -79,11 +83,11 @@
                 </div>
             </div>
 
-            <button
+            <input
+              type="submit"
               class="bg-purple-700 font-semibold text-white px-4 py-2 rounded shadow-lg m-auto block mt-10"
-              >
-              Check
-            </button>
+              value="Check"
+            />
         </div>
       </form>
     </div>
@@ -146,13 +150,57 @@
 </template>
 
 <script>
+import { getAddressFromLatLon } from "~/helpers/geocoding"
+
 export default {
   data() {
     return {
-      pagestate: "home"
+      pagestate: "home",
+      usingGeolocation: false,
+      geolat: null,
+      geolon: null,
+      fromLocation: "Thunder Bay"
     }
   },
   methods: {
+    getGeolocationData() {
+      if (!navigator.geolocation) {
+        alert("Your browser does not support geolocation");
+        this.usingGeolocation = false;
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition((pos) => {
+        this.geolat = pos.coords.latitude;
+        this.geolon = pos.coords.longitude;
+
+        getAddressFromLatLon(this.geolat, this.geolon)
+          .then((address) => {
+            this.fromLocation = address;
+          })
+          .catch(() => {
+            alert("There was an error looking up your address. Please set it manually");
+            this.usingGeolocation = false;
+          })
+      }, (err) => {
+        if (err.code === GeolocationPositionError.PERMISSION_DENIED) {
+          alert("Please allow location permissions to use geolocation");
+        } else if (err.code === GeolocationPositionError.POSITION_UNAVAILABLE) {
+          alert("Couldn't get location data. Please set the location manually");
+        } else if (err.code === GeolocationPositionError.TIMEOUT) {
+          alert("Timed out trying to find the location. Please set the location manually");
+        } else {
+          alert("Unknown geolocation error occured. Please set the location manually");
+        }
+
+        this.usingGeolocation = false;
+      })
+    },
+    toggleGeolocation(e) {
+      e.preventDefault();
+      this.usingGeolocation = !this.usingGeolocation;
+      if (this.usingGeolocation) this.getGeolocationData();
+    },
     submitForm(e) {
       e.preventDefault();
 

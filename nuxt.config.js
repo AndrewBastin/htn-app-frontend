@@ -18,6 +18,10 @@ export default {
     ]
   },
 
+  publicRuntimeConfig: {
+    GOOG_API_KEY: process.env.GOOG_API_KEY || ""
+  },
+
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [
   ],
@@ -31,6 +35,7 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
+    '@nuxtjs/dotenv',
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
   ],
