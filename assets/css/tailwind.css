@@ -1,0 +1,15 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.home-input {
+  @apply rounded;
+  @apply bg-white;
+  @apply px-4 py-2;
+  @apply shadow-lg;
+  @apply flex;
+
+  &:focus-within {
+    @apply outline-none;
+  }
+}
