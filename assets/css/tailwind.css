@@ -13,3 +13,8 @@
     @apply outline-none;
   }
 }
+
+.mode-selected {
+  @apply border-2 border-solid border-purple-700;
+  @apply text-purple-700;
+}

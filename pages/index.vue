@@ -62,25 +62,7 @@
               Using
               </label> 
                 <br />
-                <div
-                  class="rounded bg-white flex px-4 py-2 shadow-xl focus-within:outline-none focus-within:ring-2 focus-within:ring-purple-700"
-                  >
-                  <div
-                    class="inline-flex flex-1 self-center shadow-xl"
-                    >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M0 0h24v24H0z" fill="none"/><path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/></svg>
-                  </div>
-                  <input 
-                         id="method" 
-                         class="pl-2 rounded border border-transparent text-xl inline-flex font-bold focus:outline-none"
-                         value="Public Transit" 
-                         />
-                  <div
-                    class="inline-flex flex-1 self-center shadow-xl"
-                    >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M0 0h24v24H0z" fill="none"/><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
-                  </div>
-                </div>
+                <ModeSelector :onModeChange="updateMode" />
             </div>
 
             <input
@@ -151,8 +133,12 @@
 
 <script>
 import { getAddressFromLatLon } from "~/helpers/geocoding"
+import ModeSelector from "~/components/ModeSelector"
 
 export default {
+  components: {
+    ModeSelector
+  },
   data() {
     return {
       pagestate: "home",
@@ -214,6 +200,10 @@ export default {
     checkAnother() {
       console.log("check another");
       this.pagestate = "home";
+    },
+    updateMode(mode) {
+      console.log("mode update");
+      console.log(mode);
     }
   }
 }
