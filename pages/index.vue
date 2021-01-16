@@ -132,6 +132,16 @@
         </svg>
       </div>
     </div>
+
+    <div v-if="pagestate==='final'">
+      <div class="bg-purple-700 text-white h-screen flex justify-center items-center">
+        <div class="">
+          <h3 class="font-bold text-2xl">Your chances of being exposed are</h3>
+          <div class="text-center"><span class="font-bold text-6xl">55</span><span>%</span></div>
+          <button @click="checkAnother" class="px-4 py-2 m-auto mt-20 block bg-purple-300 text-purple-900 font-bold rounded shadow-lg">Check another</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -144,13 +154,18 @@ export default {
   },
   methods: {
     submitForm(e) {
-      console.log(e);
       e.preventDefault();
-      console.log("form submit!");
+
       this.pagestate = "loading";
+
       setTimeout(() => {
         this.pagestate = "final";
       }, 2000);
+    },
+
+    checkAnother() {
+      console.log("check another");
+      this.pagestate = "home";
     }
   }
 }
