@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const VALID_CITIES = [
   'Windsor',
   'Barrie',
@@ -34,3 +36,14 @@ export const VALID_CITIES = [
   'Owen Sound',
   'Kenora'
 ];
+
+export async function getStats(city, mode) {
+  const res = await axios.get("http://localhost:8000/getstats", {
+    params: {
+      city: city,
+      mode: mode
+    }
+  });
+  console.log(res);
+  return res;
+}

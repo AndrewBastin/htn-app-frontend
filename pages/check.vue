@@ -128,7 +128,7 @@
       <div class="bg-purple-700 text-white h-screen flex justify-center items-center">
         <div class="">
           <h3 class="font-bold text-2xl">Your chances of being exposed are</h3>
-          <div class="text-center"><span class="font-bold text-6xl">55</span><span>%</span></div>
+          <div class="text-center"><span class="font-bold text-6xl">{{ riskFactor }}</span><span>%</span></div>
           <button @click="checkAnother" class="px-4 py-2 m-auto mt-20 block bg-purple-300 text-purple-900 font-bold rounded shadow-lg">Check another</button>
         </div>
       </div>
@@ -140,7 +140,7 @@
 import { getAddressFromLatLon } from "~/helpers/geocoding"
 import ModeSelector from "~/components/ModeSelector"
 import Header from "~/components/Header"
-import { VALID_CITIES } from "~/helpers/backend"
+import { VALID_CITIES, getStats } from "~/helpers/backend"
 
 export default {
   components: {
@@ -154,8 +154,10 @@ export default {
       validateTo: false,
       geolat: null,
       geolon: null,
+      mode: "Bus",
       fromLocation: "",
-      toLocation: ""
+      toLocation: "",
+      riskFactor: 0
     }
   },
   methods: {
@@ -221,9 +223,13 @@ export default {
 
       this.pagestate = "loading";
 
-      setTimeout(() => {
-        this.pagestate = "final";
-      }, 2000);
+      getStats(this.toLocation, this.mode)
+        .then((res) => {
+          console.log(res)
+          this.riskFactor = res.data["risk_factor"]
+          this.pagestate = "final"
+        })
+
     },
 
     checkAnother() {
@@ -233,6 +239,9 @@ export default {
     updateMode(mode) {
       console.log("mode update");
       console.log(mode);
+      if (mode === "car") this.mode = "Car";
+      if (mode === "transit") this.mode = "Bus";
+      if (mode === "flight") this.mode = "Flight";
     }
   }
 }
