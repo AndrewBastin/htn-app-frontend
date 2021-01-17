@@ -16,7 +16,7 @@
                 >
                 <input 
                 id="from" 
-                class="font-bold text-xl focus:outline-none inline-flex flex-1"
+                class="font-bold text-xl bg-white focus:outline-none inline-flex flex-1"
                 :class="{ 'text-purple-700': usingGeolocation }"
                 v-model="fromLocation" 
                 :disabled="usingGeolocation"
@@ -46,7 +46,7 @@
                 >
                 <input 
                 id="dest" 
-                class="px-4 py-2 rounded border border-transparent text-xl inline-flex flex-1 font-bold shadow-xl focus:ring-2 focus:outline-none focus:ring-purple-700"
+                class="px-4 py-2 rounded border bg-white border-transparent text-xl inline-flex flex-1 font-bold shadow-xl focus:ring-2 focus:outline-none focus:ring-purple-700"
                 value="Thunder Bay" 
                 />
               </div>
