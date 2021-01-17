@@ -32,7 +32,7 @@
 export default {
   props: {
     selected: {
-      type: Boolean,
+      type: String,
       required: true
     }
   }

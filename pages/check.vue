@@ -19,7 +19,8 @@
                 <input 
                 id="from" 
                 class="font-bold text-xl bg-white focus:outline-none inline-flex flex-1"
-                :class="{ 'text-purple-700': usingGeolocation }"
+                :class="{ 'text-purple-700': usingGeolocation, 'text-red-500': validateFrom }"
+                @input="onFromChange"
                 v-model="fromLocation" 
                 :disabled="usingGeolocation"
                 />
@@ -49,7 +50,9 @@
                 <input 
                 id="dest" 
                 class="px-4 py-2 rounded border bg-white border-transparent text-xl inline-flex flex-1 font-bold shadow-xl focus:ring-2 focus:outline-none focus:ring-purple-700"
-                value="Thunder Bay" 
+                :class="{ 'text-red-500': validateTo }"
+                v-model="toLocation"
+                @input="onToChange"
                 />
               </div>
           </div>
@@ -137,6 +140,7 @@
 import { getAddressFromLatLon } from "~/helpers/geocoding"
 import ModeSelector from "~/components/ModeSelector"
 import Header from "~/components/Header"
+import { VALID_CITIES } from "~/helpers/backend"
 
 export default {
   components: {
@@ -146,12 +150,21 @@ export default {
     return {
       pagestate: "home",
       usingGeolocation: false,
+      validateFrom: false,
+      validateTo: false,
       geolat: null,
       geolon: null,
-      fromLocation: "Thunder Bay"
+      fromLocation: "",
+      toLocation: ""
     }
   },
   methods: {
+    onFromChange() {
+      this.validateFrom = false;
+    },
+    onToChange() {
+      this.validateTo = false;
+    },
     getGeolocationData() {
       if (!navigator.geolocation) {
         alert("Your browser does not support geolocation");
@@ -165,6 +178,11 @@ export default {
 
         getAddressFromLatLon(this.geolat, this.geolon)
           .then((address) => {
+            if (!VALID_CITIES.includes(address)) {
+              alert("You don't seem to be in Ontario. Please set the from location to a city in Ontario, manually.");
+              this.usingGeolocation = false;
+              return;
+            }
             this.fromLocation = address;
           })
           .catch(() => {
@@ -192,6 +210,14 @@ export default {
     },
     submitForm(e) {
       e.preventDefault();
+
+      if (!VALID_CITIES.includes(this.fromLocation)) this.validateFrom = true;
+      if (!VALID_CITIES.includes(this.toLocation)) this.validateTo = true;
+
+      if (this.validateFrom || this.validateTo) {
+        alert("Either from city or to city is invalid. Please make sure you enter the from city and destination city as valid cities in Ontario.");
+        return;
+      }
 
       this.pagestate = "loading";
 
